@@ -17,27 +17,38 @@ def home():
 @app.post("/predict")
 def predict(data: dict):
     try:
-        # ✅ Expecting: { "features": [ ... ] }
         features = data.get("features")
 
-        # Validation
-        if features is None:
-            return {"error": "Missing 'features' in request"}
-
-        if not isinstance(features, list):
-            return {"error": "'features' must be a list"}
-
         if len(features) != 7:
-            return {"error": f"Expected 7 features, got {len(features)}"}
+            return {"error": "Expected 7 features"}
 
-        # Convert to numpy
+        import numpy as np
         features = np.array(features).reshape(1, -1)
 
         # Scale
         features_scaled = scaler.transform(features)
 
-        # Predict
+        # Model prediction
         prediction = model.predict(features_scaled)[0]
+
+        # 🔥 NEW: RULE-BASED CORRECTION
+        stress, sleep, study, screen, exam, physical, family = features[0]
+
+        high_score = 0
+
+        if stress >= 8: high_score += 1
+        if sleep <= 3: high_score += 1
+        if screen >= 8: high_score += 1
+        if exam >= 8: high_score += 1
+        if family >= 8: high_score += 1
+        if physical <= 3: high_score += 1
+
+        # 🔥 Override logic
+        if high_score >= 4:
+            prediction = 2
+
+        elif high_score >= 2 and prediction == 0:
+            prediction = 1
 
         return {
             "prediction": int(prediction)

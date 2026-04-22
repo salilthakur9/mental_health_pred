@@ -3,7 +3,7 @@ import axios from "axios";
 
 const questions = [
   "Stress level",
-  "Sleep quality",
+  "Sleep hours",
   "Study hours",
   "Screen time",
   "Exam pressure",
@@ -11,51 +11,29 @@ const questions = [
   "Family expectation"
 ];
 
-// 🔥 IMPORTANT: Map UI → Model values
-const mapFeatures = (a) => {
-  return [
-    a[0] * 2,            // stress_level (0–10)
-    10 - a[1],           // sleep_hours (inverse)
-    a[2] * 2,            // study_hours
-    a[3] * 2,            // screen_time
-    a[4] * 2,            // exam_pressure
-    a[5] * 1.5,          // physical_activity
-    a[6] * 2             // family_expectation
-  ];
-};
-
-const labels = ["Very Low", "Low", "Moderate", "High", "Very High"];
-
 const Assessment = ({ setResult }) => {
-  const [answers, setAnswers] = useState(Array(7).fill(null));
+  const [answers, setAnswers] = useState(Array(7).fill(5));
   const [loading, setLoading] = useState(false);
 
-  const handleSelect = (qIndex, value) => {
+  const handleChange = (index, value) => {
     const updated = [...answers];
-    updated[qIndex] = value;
+    updated[index] = Number(value);
     setAnswers(updated);
   };
 
   const submit = async () => {
-    if (answers.includes(null)) {
-      return alert("Please answer all questions");
-    }
-
     try {
       setLoading(true);
 
-      // 🔥 mapping happens here
-      const features = mapFeatures(answers);
-
       const res = await axios.post("http://localhost:5000/predict", {
-        features
+        features: answers
       });
 
       setResult(res.data);
 
     } catch (err) {
       console.error(err);
-      alert("Something went wrong");
+      alert("Error");
     } finally {
       setLoading(false);
     }
@@ -72,34 +50,29 @@ const Assessment = ({ setResult }) => {
 
         {questions.map((q, i) => (
           <div key={i}>
-            <p className="mb-3 font-medium">{q}</p>
+            <p className="mb-2">{q}</p>
 
-            {/* 🔥 Better scale UI */}
-            <div className="flex justify-between text-xs text-slate-400 mb-2">
-              <span>Low</span>
-              <span>High</span>
-            </div>
+            {/* Slider */}
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={answers[i]}
+              onChange={(e) => handleChange(i, e.target.value)}
+              className="w-full accent-blue-500"
+            />
 
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((val) => (
-                <button
-                  key={val}
-                  onClick={() => handleSelect(i, val)}
-                  className={`flex-1 py-2 rounded-lg border text-sm transition-all
-                  ${
-                    answers[i] === val
-                      ? "bg-blue-500 border-blue-500 scale-105 text-white"
-                      : "bg-slate-800 border-slate-600 hover:bg-slate-700"
-                  }`}
-                >
-                  {labels[val - 1]}
-                </button>
-              ))}
+            {/* Value */}
+            <div className="flex justify-between text-sm text-slate-400">
+              <span>1</span>
+              <span className="text-blue-400 font-semibold">
+                {answers[i]}
+              </span>
+              <span>10</span>
             </div>
           </div>
         ))}
 
-        {/* 🔥 Submit */}
         <button
           onClick={submit}
           disabled={loading}
