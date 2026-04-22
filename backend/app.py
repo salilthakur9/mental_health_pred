@@ -17,23 +17,31 @@ def home():
 @app.post("/predict")
 def predict(data: dict):
     try:
-        features = np.array([[
-            data["stress_level"],
-            data["sleep_hours"],
-            data["study_hours_per_day"],
-            data["screen_time"],
-            data["exam_pressure"],
-            data["physical_activity"],
-            data["family_expectation"]
-        ]])
+        # ✅ Expecting: { "features": [ ... ] }
+        features = data.get("features")
+
+        # Validation
+        if features is None:
+            return {"error": "Missing 'features' in request"}
+
+        if not isinstance(features, list):
+            return {"error": "'features' must be a list"}
+
+        if len(features) != 7:
+            return {"error": f"Expected 7 features, got {len(features)}"}
+
+        # Convert to numpy
+        features = np.array(features).reshape(1, -1)
 
         # Scale
-        features = scaler.transform(features)
+        features_scaled = scaler.transform(features)
 
         # Predict
-        prediction = model.predict(features)[0]
+        prediction = model.predict(features_scaled)[0]
 
-        return {"prediction": int(prediction)}
+        return {
+            "prediction": int(prediction)
+        }
 
     except Exception as e:
         return {"error": str(e)}
