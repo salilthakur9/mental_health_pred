@@ -11,7 +11,6 @@ const GridGallery = () => {
   return (
     <div id="grid" className="bg-black text-white py-20 px-6 flex flex-col items-center">
 
-      {/* Heading */}
       <h2 className="text-4xl font-bold mb-2 text-center">
         Life in <span className="text-blue-400">Grid</span>
       </h2>
@@ -20,7 +19,6 @@ const GridGallery = () => {
         // Snapshots of happy journey
       </p>
 
-      {/* Grid */}
       <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {images.map((src, i) => (
           <div

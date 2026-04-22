@@ -12,14 +12,12 @@ app.post("/predict", async (req, res) => {
   try {
     const { features } = req.body;
 
-    // Validation
     if (!features || !Array.isArray(features)) {
       return res.status(400).json({
         error: "Invalid features array"
       });
     }
 
-    // Call FastAPI
     const response = await axios.post(
       "http://127.0.0.1:8000/predict",
       { features }
@@ -27,7 +25,6 @@ app.post("/predict", async (req, res) => {
 
     const prediction = response.data.prediction;
 
-    // Get suggestions
     const resultData = suggestions[prediction];
 
     res.json({

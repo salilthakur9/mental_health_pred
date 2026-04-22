@@ -52,7 +52,6 @@ const Assessment = ({ setResult }) => {
           <div key={i}>
             <p className="mb-2">{q}</p>
 
-            {/* Slider */}
             <input
               type="range"
               min="1"
@@ -62,7 +61,6 @@ const Assessment = ({ setResult }) => {
               className="w-full accent-blue-500"
             />
 
-            {/* Value */}
             <div className="flex justify-between text-sm text-slate-400">
               <span>1</span>
               <span className="text-blue-400 font-semibold">
