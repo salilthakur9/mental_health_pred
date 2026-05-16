@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
 
+import protect from "../middleware/authMiddleware.js";
+
 
 // ================= REGISTER =================
 

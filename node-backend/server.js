@@ -9,6 +9,7 @@ import authRoutes from "./routes/authRoutes.js";
 import protect from "./middleware/authMiddleware.js";
 import User from "./models/User.js";
 import burnoutRoutes from "./routes/burnoutRoutes.js";
+import recommendationRoutes from "./routes/recommendationRoutes.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/burnout", burnoutRoutes);
+app.use("/api/recommendations", recommendationRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Running 🚀");
