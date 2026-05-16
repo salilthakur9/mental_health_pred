@@ -1,7 +1,5 @@
 import User from "../models/User.js";
-
 import Recommendation from "../models/Recommendation.js";
-
 
 export const getRecommendations = async (req, res) => {
 
@@ -12,8 +10,11 @@ export const getRecommendations = async (req, res) => {
     if (!user) {
 
       return res.status(404).json({
+
         success: false,
+
         message: "User not found"
+
       });
 
     }
@@ -27,8 +28,7 @@ export const getRecommendations = async (req, res) => {
 
         success: true,
 
-        message:
-          "No burnout history found",
+        message: "No burnout history found",
 
         recommendations: []
 
@@ -39,34 +39,93 @@ export const getRecommendations = async (req, res) => {
 
     // GET LATEST RECORD
 
-    const latestBurnout =
-      user.burnoutHistory[0];
-
+    const latestBurnout = user.burnoutHistory[0];
 
     let burnoutLevel = "";
 
-
     if (latestBurnout.prediction === 0) {
+
       burnoutLevel = "low";
+
     }
 
     else if (latestBurnout.prediction === 1) {
+
       burnoutLevel = "moderate";
+
     }
 
     else {
+
       burnoutLevel = "high";
+
     }
 
 
-    // FETCH MATCHING RECOMMENDATIONS
+    // FETCH DIVERSE RECOMMENDATIONS
 
-    const recommendations =
-      await Recommendation.find({
+    const songs = await Recommendation.find({
 
-        burnoutLevels: burnoutLevel
+      burnoutLevels: burnoutLevel,
 
-      }).limit(10);
+      type: "song"
+
+    }).limit(2);
+
+
+    const movies = await Recommendation.find({
+
+      burnoutLevels: burnoutLevel,
+
+      type: "movie"
+
+    }).limit(2);
+
+
+    const books = await Recommendation.find({
+
+      burnoutLevels: burnoutLevel,
+
+      type: "book"
+
+    }).limit(2);
+
+
+    const videos = await Recommendation.find({
+
+      burnoutLevels: burnoutLevel,
+
+      type: "video"
+
+    }).limit(2);
+
+
+    const extras = await Recommendation.find({
+
+      burnoutLevels: burnoutLevel,
+
+      type: {
+        $in: ["podcast", "routine"]
+      }
+
+    }).limit(2);
+
+
+    // COMBINE ALL
+
+    const recommendations = [
+
+      ...songs,
+
+      ...movies,
+
+      ...books,
+
+      ...videos,
+
+      ...extras
+
+    ];
 
 
     res.status(200).json({
@@ -88,8 +147,8 @@ export const getRecommendations = async (req, res) => {
     res.status(500).json({
 
       success: false,
-      message:
-        "Failed to fetch recommendations"
+
+      message: "Failed to fetch recommendations"
 
     });
 
