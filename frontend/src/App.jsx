@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import Mate from "./pages/Mate";
 
 function App() {
   return (
@@ -25,6 +26,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mate"
+          element={
+            <ProtectedRoute>
+              <Mate />
             </ProtectedRoute>
           }
         />
