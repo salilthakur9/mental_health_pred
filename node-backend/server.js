@@ -1,7 +1,9 @@
+
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import axios from "axios";
 import cors from "cors";
-import dotenv from "dotenv";
 
 import suggestions from "./suggestions.js";
 import connectDB from "./config/db.js";
@@ -10,8 +12,8 @@ import protect from "./middleware/authMiddleware.js";
 import User from "./models/User.js";
 import burnoutRoutes from "./routes/burnoutRoutes.js";
 import recommendationRoutes from "./routes/recommendationRoutes.js";
+import mateRoutes from "./routes/mateRoutes.js";
 
-dotenv.config();
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/burnout", burnoutRoutes);
 app.use("/api/recommendations", recommendationRoutes);
+app.use("/api/mate", mateRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("API Running 🚀");
