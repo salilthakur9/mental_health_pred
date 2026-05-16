@@ -1,5 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const questions = [
   "Stress level",
@@ -15,6 +17,9 @@ const Assessment = ({ setResult }) => {
   const [answers, setAnswers] = useState(Array(7).fill(5));
   const [loading, setLoading] = useState(false);
 
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   const handleChange = (index, value) => {
     const updated = [...answers];
     updated[index] = Number(value);
@@ -22,21 +27,37 @@ const Assessment = ({ setResult }) => {
   };
 
   const submit = async () => {
+
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
     try {
+
       setLoading(true);
 
-      const res = await axios.post("http://localhost:5000/predict", {
+      const res = await api.post("/predict", {
         features: answers
       });
 
       setResult(res.data);
 
     } catch (err) {
+
       console.error(err);
-      alert("Error");
+
+      alert(
+        err.response?.data?.message ||
+        "Prediction failed"
+      );
+
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
   return (
@@ -50,6 +71,7 @@ const Assessment = ({ setResult }) => {
 
         {questions.map((q, i) => (
           <div key={i}>
+
             <p className="mb-2">{q}</p>
 
             <input
@@ -57,17 +79,24 @@ const Assessment = ({ setResult }) => {
               min="1"
               max="10"
               value={answers[i]}
-              onChange={(e) => handleChange(i, e.target.value)}
+              onChange={(e) =>
+                handleChange(i, e.target.value)
+              }
               className="w-full accent-blue-500"
             />
 
             <div className="flex justify-between text-sm text-slate-400">
+
               <span>1</span>
+
               <span className="text-blue-400 font-semibold">
                 {answers[i]}
               </span>
+
               <span>10</span>
+
             </div>
+
           </div>
         ))}
 

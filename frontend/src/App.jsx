@@ -1,25 +1,35 @@
-import { useState } from "react";
-import Navbar from "./components/Navbar";
-import Header from "./components/Header";
-import About from "./components/About";
-import GridGallery from "./components/GridGallery";
-import Assessment from "./components/Assessment";
-import ResultSection from "./components/ResultSection";
-import Footer from "./components/Footer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
+
+import Login from "./pages/Login";
+
+import Register from "./pages/Register";
+
+import Dashboard from "./pages/Dashboard";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const [result, setResult] = useState(null);
-
   return (
-    <div className="bg-black min-h-screen text-white">
-      <Navbar />
-      <Header />
-      <About />
-      <GridGallery />
-      <Assessment setResult={setResult} />
-      <ResultSection data={result} />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

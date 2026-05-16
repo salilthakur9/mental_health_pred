@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
   res.send("API Running 🚀");
 });
 
-app.post("/predict", protect, async (req, res) => {
+app.post("/api/predict", protect, async (req, res) => {
 
   try {
 
