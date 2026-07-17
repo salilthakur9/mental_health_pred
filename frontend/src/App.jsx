@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Mate from "./pages/Mate";
+import Memory from "./pages/Memory";
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
+
+        <Route path="/memory" element={<Memory />} />
 
         <Route
           path="/dashboard"
